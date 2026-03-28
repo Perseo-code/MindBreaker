@@ -80,6 +80,12 @@ executeMsfVenomCmd() {
         return -1
     fi
 
+    if [ "$FORMAT" != "" ]; then
+        flags+=" -f ${FORMAT}"
+    else
+        echo "${YELLOW}${BOLD}[-] No format specified. Outputting raw payload"
+    fi
+
     # Execute msfvenom
     msfvenom $flags
 }
