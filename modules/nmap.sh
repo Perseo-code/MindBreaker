@@ -10,7 +10,7 @@ RESET='\033[0m'
 BOLD='\033[1m'
 
 if [ $EUID -ne 0 ]; then
-    echo -e "${RED}[!] You need to run as root. Some commands require root privileges"
+    echo -e "${RED}[!] You need to run as root. Some commands require root privileges.${RESET}"
     sleep 2
     exit 1
 fi
@@ -24,6 +24,12 @@ OPTIONS=(
 
 RHOST=""
 FLAGS=""
+
+echo -e "${RED}========================"
+echo -e "¦${BLUE}${BOLD}Nmap Module ${RED}          ¦"
+echo -e "========================"
+
+
 function executeNmapCommand() {
     local flags="$FLAGS"
     local ip="$RHOST"
@@ -80,9 +86,6 @@ function parseShell() {
 }
 
 while true; do
-    echo -e "${RED}========================"
-    echo -e "¦${BLUE}${BOLD}Nmap Module ${RED}¦"
-    echo -e "========================"
     echo -n -e "${RED}Nmap > ${RESET}"
     read -r command
     parseShell "$command"
