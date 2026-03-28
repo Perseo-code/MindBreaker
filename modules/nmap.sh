@@ -24,7 +24,7 @@ OPTIONS=(
 
 RHOST=""
 FLAGS=""
-
+clear
 echo -e "${RED}========================"
 echo -e "¦${BLUE}${BOLD}Nmap Module ${RED}          ¦"
 echo -e "========================"
