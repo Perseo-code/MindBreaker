@@ -19,14 +19,7 @@ LHOST=""
 OUTPUT_FILE=""
 
 # Templates
-declare -A METERPRETER_WINDOWS
-METERPRETER_WINDOWS=(
-    ["name"]="Meterpreter for Windows"
-    ["payload"]="windows/meterpreter/reverse_tcp"
-    ["encoder"]="x86/shikata_ga_nai"
-    ["iterations"]=3
-    ["format"]="exe"
-)
+source "modules/.config/msfvenom.conf"
 
 if [ -z "msfvenom" ]; then
     echo -e "${RED}[!] Please use the install script. You don't have msf installed."
@@ -162,6 +155,7 @@ parseShell() {
             echo -e "set <option> - Set a variable"
             echo -e "run - Start generating the payload."
             echo -e "exec <linux command> - Use any command while being in the msfvenom shell"
+            echo -e "use <template> - Load a template. Templates are "
         ;;
         
         "show options")
