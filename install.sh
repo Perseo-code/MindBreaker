@@ -87,3 +87,4 @@ bash mindbreaker.sh
 EOF
 
 chmod +x /usr/bin/mindbreaker
+chown -R $SUDO_USER:$SUDO_USER $MINDBREAKER_PATH
