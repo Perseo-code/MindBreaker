@@ -6,7 +6,7 @@ To install this program, you have to follow very easy steps.
 
 ```
 curl https://raw.githubusercontent.com/Perseo-code/MindBreaker/main/install.sh --output install
-chmod +x ./install # If the script already has the permissions, this is optional.
+chmod +x ./install
 sudo ./install
 ```
 
