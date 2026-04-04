@@ -15,7 +15,7 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-echo -e "${CYAN}!Installing dependencies...!${RESET}"
+echo -e "${CYAN}→ Installing dependencies...${RESET}"
 declare -A DEPENDENCIES
 DEPENDENCIES=( ["nmap"]="nmap" ["metasploit-framework"]="msfconsole" )
 PKG_MANAGER=""
@@ -28,12 +28,12 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     elif [ -f /etc/arch-release ]; then
         PKG_MANAGER="pacman -S --noconfirm"
         PKG_UPDATE="pacman -Sy"
-		echo -e "${CYAN}→ !Arch Linux / based OS detected!${RESET}"
+		echo -e "${CYAN}→ Arch Linux / based OS detected${RESET}"
     fi
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     PKG_MANAGER="brew install"
     PKG_UPDATE="brew update"
-	echo -e "${CYAN}→ !MacOS detected!${RESET}"
+	echo -e "${CYAN}→ MacOS detected${RESET}"
 else
 	echo -e "${RED}${BOLD}→ Your OS is not compatible with MindBreaker!${RESET}"
 	exit 2
@@ -68,15 +68,15 @@ for d in "${!DEPENDENCIES[@]}"; do
     fi    
 done
 
-echo -e "${CYAN}!Done installing dependencies!${RESET}"
+echo -e "${CYAN}→ Done installing dependencies${RESET}"
 
-echo -e "${CYAN}!Installing scripts...!${RESET}"
+echo -e "${CYAN}→ Installing scripts...${RESET}"
 cd /opt
 git clone https://github.com/Perseo-code/MindBreaker.git
 cd MindBreaker
 
 MINDBREAKER_PATH="/opt/MindBreaker"
-echo -e "${CYAN}!Creating launcher...!${RESET}"
+echo -e "${CYAN}→ Creating launcher...${RESET}"
 
 cat << EOF > /usr/bin/mindbreaker
 #! /bin/bash
@@ -86,5 +86,7 @@ bash mindbreaker.sh
 
 EOF
 
+echo -e "${CYAN}→ Changing permissions...${RESET}"
 chmod +x /usr/bin/mindbreaker
 chown -R $SUDO_USER:$SUDO_USER $MINDBREAKER_PATH
+echo -e "${GREEN}${BOLD}→ Installation Finished successfully!${RESET}"
