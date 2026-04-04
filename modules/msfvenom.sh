@@ -47,31 +47,31 @@ executeMsfVenomCmd() {
     if [ "$LHOST" != "" ]; then
         flags+=" LHOST=${LHOST}"
     else
-        echo -e "${RED}[!] You need to have a Local Host configured.${RESET}"
+        echo -e "${RED}[!] → You need to have a Local Host configured.${RESET}"
         return 1
     fi 
     if [ "$LPORT" != "" ]; then
         flags+=" LPORT=${LPORT}"
     else
-        echo -e "${RED}[!] You need to have a Local Port configured.${RESET}"
+        echo -e "${RED}[!] → You need to have a Local Port configured.${RESET}"
         return 2
     fi 
 
     if [ "$ARCH" != "" ]; then
         flags+=" -a ${ARCH}"
     else
-        echo -e "${YELLOW}${BOLD}[-]${RESET} No architecture specified. MsfVenom will automatically detect the script's architecture"
+        echo -e "${YELLOW}${BOLD}[-]${RESET} → No architecture specified. MsfVenom will automatically detect the script's architecture"
     fi
 
     if [ "$PLATFORM" != "" ]; then
         flags+=" --platform ${PLATFORM}"
     else
-        echo -e "${YELLOW}${BOLD}[-]${RESET} No platform specified, msfvenom will automatically detect the script's platform"
+        echo -e "${YELLOW}${BOLD}[-]${RESET} → No platform specified, msfvenom will automatically detect the script's platform"
     fi
     if [ "$PAYLOAD" != "" ]; then
         flags+=" -p ${PAYLOAD}"
     else
-        echo -e "${RED}[!] There's no payload configured.${RESET}"
+        echo -e "${RED}[!] → There's no payload configured.${RESET}"
         return 3
     fi
     if [ "$ENCODER" != "" ]; then
@@ -79,25 +79,25 @@ executeMsfVenomCmd() {
         if [ "$ITERATIONS" != "" ]; then
             flags+=" -i ${ITERATIONS}"
         else
-            echo -e "${YELLOW}${BOLD}[-] There's no specific encoding iterations. Will default to 5."
+            echo -e "${YELLOW}${BOLD}[-] → There's no specific encoding iterations. Will default to 5."
             ITERATIONS=5
             flags+=" -i ${ITERATIONS}"
         fi
     else
-        echo -e "${YELLOW}${BOLD}[-] There's no encoder configured, raw binary will be output."
+        echo -e "${YELLOW}${BOLD}[-] → There's no encoder configured, raw binary will be output."
     fi
     
     if [ "$OUTPUT_FILE" != "" ]; then
         flags+=" -o ${OUTPUT_FILE}"
     else
-        echo "${RED}${BOLD}[!!] FATAL: No output file specificated. Please use 'set output /path/to/file'"
+        echo "${RED}${BOLD}[!!] → FATAL: No output file specificated. Please use 'set output /path/to/file'"
         return -1
     fi
 
     if [ "$FORMAT" != "" ]; then
         flags+=" -f ${FORMAT}"
     else
-        echo "${YELLOW}${BOLD}[-] No format specified. Outputting raw payload"
+        echo "${YELLOW}${BOLD}[-] → No format specified. Outputting raw payload"
     fi
 
     # Execute msfvenom
@@ -107,7 +107,7 @@ executeMsfVenomCmd() {
 loadTemplate() {
     declare -n template=$1
     if [ -z "$1" ]; then
-        echo -e "${RED}[!] Unknown template ${RESET}"
+        echo -e "${RED}[!] → Unknown template ${RESET}"
     fi
 
     # Add all the configuration.
@@ -144,7 +144,7 @@ parseShell() {
                 echo -e "${BLUE}[*]${RESET} Set encoder => ${ENCODER}"
             elif [[ "${option}" = "iterations"* ]]; then
                 if [ "${ENCODER}" = "" ]; then
-                    echo -e "${YELLOW}${BOLD}[-]${RESET} Encoder not specified, remember to specify it."
+                    echo -e "${YELLOW}${BOLD}[-]${RESET} → Encoder not specified, remember to specify it."
                 fi
 
                 ITERATIONS="${option:11}"
@@ -159,7 +159,7 @@ parseShell() {
                 ARCH="${option:5}"
                 echo -e "${BLUE}[*]${RESET} Set arch => ${ARCH}"
             else
-                echo -e "${RED}[!] No option selected."
+                echo -e "${RED}[!] → No option selected."
             fi
         ;;
 
@@ -175,7 +175,7 @@ parseShell() {
         ;;
 
         "help")
-            echo -e "${BOLD}${GREEN}MsfVenom Helper Help."
+            echo -e "${BOLD}${GREEN}→ MsfVenom Helper Help."
             echo -e "Commands:"
             echo -e "show options - see the options available."
             echo -e "set <option> - Set a variable"
@@ -185,7 +185,7 @@ parseShell() {
         ;;
         
         "show options")
-            echo -e "${BOLD}${PURPLE}Options:"
+            echo -e "${BOLD}${PURPLE}→ Options:"
             echo -e "payload: ${PAYLOAD} - The program that lets you in the target's system. ${RED}${BOLD}(mandatory).${PURPLE}"
             echo -e "LPORT: ${LPORT} - The selected local port (I recommend a random one) ${RED}${BOLD}(mandatory).${PURPLE}"
             echo -e "LHOST: ${LHOST} - Your IP address ${RED}${BOLD}(mandatory).${PURPLE}"
@@ -203,14 +203,14 @@ parseShell() {
             loadTemplate "$selected_template"
         ;;
         "*")
-            echo -e "${RED}[!] Unknown command"
+            echo -e "${RED}[!] → Unknown command"
         ;;
     esac
 }
 
 clear
 
-delayedtext "Initializing Msfvenom Helper"
+delayedtext "→ Initializing Msfvenom Helper"
 
 
 echo -e "\n${RED}========================"
@@ -219,7 +219,7 @@ echo -e "========================"
 
 sleep 1
 while true; do
-    echo -n -e "${BLUE}MsfVenom > ${RESET}"
+    echo -n -e "${BLUE}MsfVenom → ${RESET}"
     read -r choice
     parseShell "$choice"
 done
