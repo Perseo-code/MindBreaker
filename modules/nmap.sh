@@ -34,9 +34,10 @@ function executeNmapCommand() {
     local flags="$FLAGS"
     local ip="$RHOST"
     if [[ "$flags" =~ "-O" ]]; then
-        sudo nmap $ip $flags || echo -e "${RED} Error."
+        sudo nmap $flags $ip
+    else
+        nmap $flags $ip
     fi
-    nmap $flags $ip || echo -e "${RED} Error."
 }
 
 function parseShell() {
