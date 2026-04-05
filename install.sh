@@ -17,17 +17,19 @@ fi
 
 echo -e "${CYAN}→ Installing dependencies...${RESET}"
 declare -A DEPENDENCIES
-DEPENDENCIES=( ["nmap"]="nmap" ["metasploit-framework"]="msfconsole" )
+DEPENDENCIES=( ["nmap"]="nmap" ["metasploit-framework"]="msfconsole" ["netcat"]="nc" )
 PKG_MANAGER=""
-
+NC_CMD="nc"
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     if [ -f /etc/debian_version ]; then
         PKG_MANAGER="apt install -y"
         PKG_UPDATE="apt update"
+        NC_PKG="netcat-traditional"
 		echo -e "${CYAN}→ !Debian / based OS detected!${RESET}"
     elif [ -f /etc/arch-release ]; then
         PKG_MANAGER="pacman -S --noconfirm"
         PKG_UPDATE="pacman -Sy"
+        NC_PKG="gnu-netcat"
 		echo -e "${CYAN}→ Arch Linux / based OS detected${RESET}"
     fi
 elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -39,6 +41,7 @@ else
 	exit 2
 fi
 
+DEPENDENCIES["$NC_PKG"]="$NC_CMD"
 eval "$PKG_UPDATE"
 
 for d in "${!DEPENDENCIES[@]}"; do
