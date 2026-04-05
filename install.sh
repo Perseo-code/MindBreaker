@@ -16,17 +16,9 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-if [ -e "$MINDBREAKER_PATH" ]; then
-    echo -e "${CYAN}${BOLD}→ MindBreaker folder detected!"
-    echo -e "→ Starting update... ←${RESET}"
-    cd "$MINDBREAKER_PATH"
-    git pull || echo "${RED}${BOLD}→ Something went wrong during the installation... ←" && exit -1
 
-    echo -e "${GREEN}${BOLD}→ MindBreaker successfully updated & ready to go! ←${RESET}"
-    exit 0
-fi
 
-echo -e "${CYAN}→ Installing dependencies...←${RESET}"
+echo -e "${CYAN}→ Installing missing dependencies...←${RESET}"
 declare -A DEPENDENCIES
 DEPENDENCIES=( ["nmap"]="nmap" ["metasploit-framework"]="msfconsole" ["netcat"]="nc" ["git"]="git" )
 PKG_MANAGER=""
@@ -82,7 +74,17 @@ for d in "${!DEPENDENCIES[@]}"; do
     fi    
 done
 
-echo -e "${CYAN}→ Done installing dependencies${RESET}"
+echo -e "${CYAN}→ Done installing missing dependencies!${RESET}"
+
+if [ -e "$MINDBREAKER_PATH" ]; then
+    echo -e "${CYAN}${BOLD}→ MindBreaker folder detected!"
+    echo -e "→ Starting update... ←${RESET}"
+    cd "$MINDBREAKER_PATH"
+    git pull || echo "${RED}${BOLD}→ Something went wrong during the installation... ←" && exit -1
+
+    echo -e "${GREEN}${BOLD}→ MindBreaker successfully updated & ready to go! ←${RESET}"
+    exit 0
+fi
 
 echo -e "${CYAN}→ Installing scripts...${RESET}"
 cd /opt

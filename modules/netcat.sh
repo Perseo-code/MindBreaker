@@ -13,7 +13,7 @@ BOLD='\033[1m'
 declare -A MODES
 MODES=( 
     ["LISTEN"]="" # Server mode (IP will be ignored if this is true)
-    ["PORT"]="" # The port will be ignored if this becomes false 
+    ["PORT"]=1234 # The port you are going to listen
     ["VERBOSE"]="" # Will show additional information. 
     ["NUMERIC"]="" # Will avoid DNS resolution, only 'raw' IPs allowed 
     ["ZERO-IO"]="" # Scan mode. ["UDP"]="" # Forces netcat to use the UDP protocol 

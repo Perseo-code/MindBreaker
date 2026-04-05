@@ -1,4 +1,4 @@
-# The MsfVenom helper documentation
+# The MsfVenom Module documentation
 Welcome to the MsfVenom documentation file! \
 This tool is a very easy-to-use hacking kit. If you ever wanted to generate malicious files which connect to your computer and give you full access of the target's computer, this tool uses the msfvenom command for that exact same thing! Since msfvenom can be hard to cope with, this tool I made will make your life easier.
 
