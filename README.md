@@ -20,13 +20,13 @@ MindBreaker only executes bash scripts with the bash command internally. \
 So just learn how to use bash and you got it. This repository is actually just scripts.
 
 # Requirements
-Shell: **Bash 4^**
+Shell: **Bash 4^** \
 OS: **MacOS**, **Debian/Ubuntu/Based**, **Arch Linux/Based**
 # Disclaimer
 The contributors of this repository are not responsible for the use that other users might give to the program. \
 Remember to use the scripts responsibly. Be ethical and don't hack other people.
 
 # Credits
-**Perseo**: Only coder and the MindBreaker
+**Perseo**: Only coder and the MindBreaker \
 
 **Vellum Core Group**: This program is associated with this group.
