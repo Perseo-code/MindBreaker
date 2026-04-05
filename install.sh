@@ -9,15 +9,26 @@ WHITE='\033[1;37m'
 RESET='\033[0m'
 BOLD='\033[1m'
 
+MINDBREAKER_PATH="/opt/MindBreaker"
 
 if [ "$EUID" -ne 0 ]; then
     echo -e "${RED}${BOLD}→ You need to run this script as root${RESET}"
     exit 1
 fi
 
-echo -e "${CYAN}→ Installing dependencies...${RESET}"
+if [ -e "$MINDBREAKER_PATH" ]; then
+    echo -e "${CYAN}${BOLD}→ MindBreaker folder detected!"
+    echo -e "→ Starting update... ←${RESET}"
+    cd "$MINDBREAKER_PATH"
+    git pull || echo "${RED}${BOLD}→ Something went wrong during the installation... ←" && exit -1
+
+    echo -e "${GREEN}${BOLD}→ MindBreaker successfully updated & ready to go! ←${RESET}"
+    exit 0
+fi
+
+echo -e "${CYAN}→ Installing dependencies...←${RESET}"
 declare -A DEPENDENCIES
-DEPENDENCIES=( ["nmap"]="nmap" ["metasploit-framework"]="msfconsole" ["netcat"]="nc" )
+DEPENDENCIES=( ["nmap"]="nmap" ["metasploit-framework"]="msfconsole" ["netcat"]="nc" ["git"]="git" )
 PKG_MANAGER=""
 NC_CMD="nc"
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
@@ -25,19 +36,19 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
         PKG_MANAGER="apt install -y"
         PKG_UPDATE="apt update"
         NC_PKG="netcat-traditional"
-		echo -e "${CYAN}→ !Debian / based OS detected!${RESET}"
+		echo -e "${CYAN}→ !Debian / based OS detected! ←${RESET}"
     elif [ -f /etc/arch-release ]; then
         PKG_MANAGER="pacman -S --noconfirm"
         PKG_UPDATE="pacman -Sy"
         NC_PKG="gnu-netcat"
-		echo -e "${CYAN}→ Arch Linux / based OS detected${RESET}"
+		echo -e "${CYAN}→ Arch Linux / based OS detected! ←${RESET}"
     fi
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     PKG_MANAGER="brew install"
     PKG_UPDATE="brew update"
-	echo -e "${CYAN}→ MacOS detected${RESET}"
+	echo -e "${CYAN}→ MacOS detected ←${RESET}"
 else
-	echo -e "${RED}${BOLD}→ Your OS is not compatible with MindBreaker!${RESET}"
+	echo -e "${RED}${BOLD}→ Your OS is not compatible with MindBreaker! ←${RESET}"
 	exit 2
 fi
 
@@ -78,7 +89,6 @@ cd /opt
 git clone https://github.com/Perseo-code/MindBreaker.git
 cd MindBreaker
 
-MINDBREAKER_PATH="/opt/MindBreaker"
 echo -e "${CYAN}→ Creating launcher...${RESET}"
 
 cat << EOF > /usr/bin/mindbreaker

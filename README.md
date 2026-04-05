@@ -9,6 +9,7 @@ curl https://raw.githubusercontent.com/Perseo-code/MindBreaker/main/install.sh -
 chmod +x ./install
 sudo ./install
 ```
+If you already have already installed the program, do the same steps to update.
 
 # How it works
 Basically, it gives you a couple scripts to hack, and you can load them using the file mindbreaker, \
