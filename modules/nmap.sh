@@ -17,13 +17,13 @@ fi
 
 
 
+declare -A OPTIONS
+
 OPTIONS=(
-    "ip"
-    "flags"
+    ["ip"]=""
+    ["flags"]=""
 )
 
-RHOST=""
-FLAGS=""
 clear
 echo -e "${RED}========================"
 echo -e "¦${BLUE}${BOLD}Nmap Module ${RED}          ¦"
@@ -31,8 +31,8 @@ echo -e "========================"
 
 
 function executeNmapCommand() {
-    local flags="$FLAGS"
-    local ip="$RHOST"
+    local flags="${OPTIONS['flags']}"
+    local ip="${OPTIONS['ip']}"
     if [[ "$flags" =~ "-O" ]]; then
         sudo nmap $flags $ip
     else
@@ -40,10 +40,35 @@ function executeNmapCommand() {
     fi
 }
 
+function show_options() {
+    echo -e "\n${BLUE}${BOLD}Netcat Module Options:${RESET}"
+    echo -e "${WHITE}==========================================${RESET}"
+    printf "${CYAN}%-15s %-20s${RESET}\n" "OPTION" "CURRENT VALUE"
+    echo -e "${WHITE}------------------------------------------${RESET}"
+
+    for opt in "${!OPTIONS[@]}"; do
+        local val="${OPTIONS[$opt]}"
+        
+        if [[ -z "$val" ]]; then
+            val="${YELLOW}[Not Set]${RESET}"
+        else
+            val="${GREEN}$val${RESET}"
+        fi
+
+        printf "%-15s %b\n" "$opt" "$val"
+    done
+    
+    echo -e "${WHITE}==========================================${RESET}\n"
+}
+
 function parseShell() {
     case "$1" in
         "exit")
             exit 0
+        ;;
+
+        "show options")
+            show_options
         ;;
         "set "*)
             local text=$1
@@ -51,11 +76,11 @@ function parseShell() {
             local option=${text:4}
             
             if [[ "${option}" = "ip"* ]]; then
-                RHOST=${text:7}
-                echo -e "${CYAN}[+] IP set to: $RHOST"
+                OPTIONS["ip"]=${text:7}
+                echo -e "${CYAN}[+] IP set to: ${OPTIONS['ip']}"
             elif [[ "${option}" = "flags"* ]]; then
-                FLAGS=${text:10}
-                echo -e "${CYAN}[+] FLAGS set to: $FLAGS"
+                OPTIONS["flags"]=${text:10}
+                echo -e "${CYAN}[+] FLAGS set to: ${OPTIONS['flags']}"
             else
                 echo -e "${RED}[!] set: Unknown option"
             fi
@@ -87,7 +112,7 @@ function parseShell() {
 }
 
 while true; do
-    echo -n -e "${RED}Nmap > ${RESET}"
+    echo -n -e "${RED}Nmap → ${RESET}"
     read -r command
     parseShell "$command"
 done

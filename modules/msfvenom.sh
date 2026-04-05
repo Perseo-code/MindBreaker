@@ -9,16 +9,18 @@ WHITE='\033[1;37m'
 RESET='\033[0m'
 BOLD='\033[1m'
 
-
-PAYLOAD=""
-ENCODER=""
-ITERATIONS=5
-FORMAT=""
-LPORT=1234
-LHOST=""
-OUTPUT_FILE=""
-ARCH=""
-PLATFORM=""
+declare -A OPTIONS
+OPTIONS=(
+    ["PAYLOAD"]=""
+    ["ENCODER"]=""
+    ["ITERATIONS"]=5
+    ["FORMAT"]=""
+    ["LPORT"]=1234
+    ["LHOST"]=""
+    ["OUTPUT_FILE"]=""
+    ["ARCH"]=""
+    ["PLATFORM"]=""
+)
 # Templates
 source "modules/.config/msfvenom.conf"
 
@@ -111,14 +113,32 @@ loadTemplate() {
     fi
 
     # Add all the configuration.
-    PAYLOAD="${template['payload']}"
-    ENCODER="${template['encoder']}"
-    ITERATIONS="${template['iterations']}"
-    FORMAT="${template['format']}"
-    ARCH="${template['arch']}"
-    PLATFORM="${template['platform']}"
+    for opt in ${!OPTIONS[@]}; do
+        OPTIONS["$opt"]="${template[$opt]}"
+    done
     echo -e "${BLUE}[*]${RESET} Template ${template['name']} successfully loaded"
     echo -e "${GREEN}${BOLD}[·]${RESET} Remember to set the LHOST and output variables"
+}
+
+function show_options() {
+    echo -e "\n${BLUE}${BOLD}Netcat Module Options:${RESET}"
+    echo -e "${WHITE}==========================================${RESET}"
+    printf "${CYAN}%-15s %-20s${RESET}\n" "OPTION" "CURRENT VALUE"
+    echo -e "${WHITE}------------------------------------------${RESET}"
+
+    for opt in "${!OPTIONS[@]}"; do
+        local val="${OPTIONS[$opt]}"
+        
+        if [[ -z "$val" ]]; then
+            val="${YELLOW}[Not Set]${RESET}"
+        else
+            val="${GREEN}$val${RESET}"
+        fi
+
+        printf "%-15s %b\n" "$opt" "$val"
+    done
+    
+    echo -e "${WHITE}==========================================${RESET}\n"
 }
 
 parseShell() {
@@ -132,32 +152,32 @@ parseShell() {
             local option="${text:4}"
             if [[ "${option}" = "payload"* ]]; then
                 PAYLOAD="${option:8}"
-                echo -e "${BLUE}[*]${RESET} Set payload => ${PAYLOAD}"
+                echo -e "${BLUE}[*]${RESET} Set payload → ${OPTIONS['PAYLOAD']}"
             elif [[ "${option}" = "LPORT"* ]]; then
-                LPORT="${option:6}"
-                echo -e "${BLUE}[*]${RESET} Set LPORT => ${LPORT}"
+                OPTIONS["LPORT"]="${option:6}"
+                echo -e "${BLUE}[*]${RESET} Set LPORT → ${OPTIONS['LPORT']}"
             elif [[ "${option}" = "LHOST"* ]]; then
-                LHOST="${option:6}"
-                echo -e "${BLUE}[*]${RESET} Set LHOST => ${LHOST}"
+                OPTIONS["LHOST"]="${option:6}"
+                echo -e "${BLUE}[*]${RESET} Set LHOST → ${OPTIONS['LHOST']}"
             elif [[ "${option}" = "encoder"* ]]; then
-                ENCODER="${option:8}"
-                echo -e "${BLUE}[*]${RESET} Set encoder => ${ENCODER}"
+                OPTIONS["ENCODER"]="${option:8}"
+                echo -e "${BLUE}[*]${RESET} Set encoder → ${OPTIONS['ENCODER']}"
             elif [[ "${option}" = "iterations"* ]]; then
                 if [ "${ENCODER}" = "" ]; then
                     echo -e "${YELLOW}${BOLD}[-]${RESET} → Encoder not specified, remember to specify it."
                 fi
 
-                ITERATIONS="${option:11}"
-                echo -e "${BLUE}[*]${RESET} Set iterations => ${ITERATIONS}"
+                OPTIONS["ITERATIONS"]="${option:11}"
+                echo -e "${BLUE}[*]${RESET} Set iterations → ${OPTIONS['ITERATIONS']}"
             elif [[ "${option}" = "format"* ]]; then
-                FORMAT="${option:6}"
-                echo -e "${BLUE}[*]${RESET} Set format => ${FORMAT}"
+                OPTIONS["FORMAT"]="${option:6}"
+                echo -e "${BLUE}[*]${RESET} Set format → ${OPTIONS['FORMAT']}"
             elif [[ "${option}" = "output"* ]]; then
-                OUTPUT_FILE="${option:7}"
-                echo -e "${BLUE}[*]${RESET} Set output path => ${OUTPUT_FILE}"
+                OUTPUT["OUTPUT_FILE"]="${option:7}"
+                echo -e "${BLUE}[*]${RESET} Set output path → ${OPTIONS['OUTPUT_FILE']}"
             elif [[ "${option}" = "arch"* ]]; then
-                ARCH="${option:5}"
-                echo -e "${BLUE}[*]${RESET} Set arch => ${ARCH}"
+                OUTPUT["ARCH"]="${option:5}"
+                echo -e "${BLUE}[*]${RESET} Set arch → ${OPTIONS['ARCH']}"
             else
                 echo -e "${RED}[!] → No option selected."
             fi
@@ -185,16 +205,7 @@ parseShell() {
         ;;
         
         "show options")
-            echo -e "${BOLD}${PURPLE}→ Options:"
-            echo -e "payload: ${PAYLOAD} - The program that lets you in the target's system. ${RED}${BOLD}(mandatory).${PURPLE}"
-            echo -e "LPORT: ${LPORT} - The selected local port (I recommend a random one) ${RED}${BOLD}(mandatory).${PURPLE}"
-            echo -e "LHOST: ${LHOST} - Your IP address ${RED}${BOLD}(mandatory).${PURPLE}"
-            echo -e "format: ${FORMAT} - The format of the file (exe, elf) ${RED}${BOLD}(mandatory).${PURPLE}"
-            echo -e "encoder: ${ENCODER} - The selected program that hides your malicious file by encryption ${GREEN}${BOLD}(Optional)${PURPLE}"
-            echo -e "iterations: ${ITERATIONS} - The times that the encoders encrypts the file.${GREEN}${BOLD}(Optional but recommended if there's and encoder selected)${PURPLE}"
-            echo -e "output: ${OUTPUT_FILE} - The file that you want to generate ${RED}${BOLD}(mandatory).${PURPLE}"
-            echo -e "arch: ${ARCH} - The file's arquitecture. ${YELLOW}${BOLD}(Recommended)${PURPLE}"
-            echo -e "platform: ${PLATFORM} - The target's OS. ${YELLOW}${BOLD}(Recommended)${RESET}"
+            show_options
         ;;
 
         "use"*)
