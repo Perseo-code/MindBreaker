@@ -23,9 +23,21 @@ MODES=(
     ["IP"]="" # Client mode. (Listen must be false)
 )
 
+clear
+
+echo -e "${YELLOW}${BOLD}"
+cat << EOF
+ _   _      _    ____      _     __  __           _ 
+| \ | | ___| |_ / ___|__ _| |_  |  \/  | ___   __| |
+|  \| |/ _ \ __| |   / _  | __| | |\/| |/ _ \ / _  |
+| |\  |  __/ |_| |__| (_| | |_  | |  | | (_) | (_| |
+|_| \_|\___|\__|\____\__,_|\__| |_|  |_|\___/ \__,_|
+EOF
+echo -e "${RESET}"
+
 function build_nc_command() {
     local cmd="nc"
-    local target_ip=$1
+    local ip="${MODES['ip']}"
     local flags=""
 
     [[ "${MODES[LISTEN]}" == "true" ]]    && flags+=" -l"
@@ -46,12 +58,12 @@ function build_nc_command() {
         echo -e "${YELLOW}→ Initializing server on port $final_port...${RESET}"
         eval $cmd -p "$final_port"
     else
-        if [[ -z "$target_ip" ]]; then
+        if [[ -z "$ip" ]]; then
             echo -e "${RED}→ Error: The client mode requires a target IP.${RESET}"
             return 1
         fi
-        echo -e "${GREEN}→ Connecting to $target_ip:$final_port...${RESET}"
-        eval $cmd "$target_ip" "$final_port"
+        echo -e "${GREEN}→ Connecting to $ip:$final_port...${RESET}"
+        eval $cmd "$ip" "$final_port"
     fi
 }
 
@@ -127,7 +139,7 @@ function parseShell() {
 }
 
 while true; do
-    echo -e -n "NetCat → "
+    echo -e -n "${PURPLE}${BOLD}NetCat → ${RESET}"
     read -r choice
     parseShell "$choice"
 done

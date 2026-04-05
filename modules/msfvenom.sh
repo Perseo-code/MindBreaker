@@ -46,58 +46,58 @@ delayedtext() {
 
 executeMsfVenomCmd() {
     local flags=""
-    if [ "$LHOST" != "" ]; then
-        flags+=" LHOST=${LHOST}"
+    if [ "${OPTIONS['LHOST']}" != "" ]; then
+        flags+=" LHOST=${OPTIONS['LHOST']}"
     else
         echo -e "${RED}[!] → You need to have a Local Host configured.${RESET}"
         return 1
     fi 
-    if [ "$LPORT" != "" ]; then
-        flags+=" LPORT=${LPORT}"
+    if [ "${OPTIONS['LPORT']}" != "" ]; then
+        flags+=" LPORT=${OPTIONS['LPORT']}"
     else
         echo -e "${RED}[!] → You need to have a Local Port configured.${RESET}"
         return 2
     fi 
 
-    if [ "$ARCH" != "" ]; then
-        flags+=" -a ${ARCH}"
+    if [ "${OPTIONS['ARCH']}" != "" ]; then
+        flags+=" -a ${OPTIONS['ARCH']}"
     else
         echo -e "${YELLOW}${BOLD}[-]${RESET} → No architecture specified. MsfVenom will automatically detect the script's architecture"
     fi
 
-    if [ "$PLATFORM" != "" ]; then
-        flags+=" --platform ${PLATFORM}"
+    if [ "${OPTIONS['PLATFORM']}" != "" ]; then
+        flags+=" --platform ${OPTIONS['PLATFORM']}"
     else
         echo -e "${YELLOW}${BOLD}[-]${RESET} → No platform specified, msfvenom will automatically detect the script's platform"
     fi
-    if [ "$PAYLOAD" != "" ]; then
-        flags+=" -p ${PAYLOAD}"
+    if [ "${OPTIONS['PAYLOAD']}" != "" ]; then
+        flags+=" -p ${OPTIONS['PAYLOAD']}"
     else
         echo -e "${RED}[!] → There's no payload configured.${RESET}"
         return 3
     fi
-    if [ "$ENCODER" != "" ]; then
-        flags+=" -e ${ENCODER}"
+    if [ "${OPTIONS['ENCODER']}" != "" ]; then
+        flags+=" -e ${OPTIONS['ENCODER']}"
         if [ "$ITERATIONS" != "" ]; then
-            flags+=" -i ${ITERATIONS}"
+            flags+=" -i ${OPTIONS['ITERATIONS']}"
         else
             echo -e "${YELLOW}${BOLD}[-] → There's no specific encoding iterations. Will default to 5."
             ITERATIONS=5
-            flags+=" -i ${ITERATIONS}"
+            flags+=" -i ${OPTIONS['ITERATIONS']}"
         fi
     else
         echo -e "${YELLOW}${BOLD}[-] → There's no encoder configured, raw binary will be output."
     fi
     
-    if [ "$OUTPUT_FILE" != "" ]; then
-        flags+=" -o ${OUTPUT_FILE}"
+    if [ "${OPTIONS['OUTPUT_FILE']}" != "" ]; then
+        flags+=" -o ${OPTIONS['OUTPUT_FILE']}"
     else
         echo "${RED}${BOLD}[!!] → FATAL: No output file specificated. Please use 'set output /path/to/file'"
         return -1
     fi
 
-    if [ "$FORMAT" != "" ]; then
-        flags+=" -f ${FORMAT}"
+    if [ "${OPTIONS['FORMAT']}" != "" ]; then
+        flags+=" -f ${OPTIONS['FORMAT']}"
     else
         echo "${YELLOW}${BOLD}[-] → No format specified. Outputting raw payload"
     fi
@@ -224,9 +224,15 @@ clear
 delayedtext "→ Initializing Msfvenom Helper"
 
 
-echo -e "\n${RED}========================"
-echo -e "¦${BLUE}${BOLD}MsfVenom Helper ${RED}      ¦"
-echo -e "========================"
+echo -e "${CYAN}${BOLD}"
+cat << EOF
+ __  __      ____     __                           __  __           _ 
+|  \/  |___ / _\ \   / /__ _ __   ___  _ __ ___   |  \/  | ___   __| |
+| |\/| / __| |_ \ \ / / _ \ '_ \ / _ \| '_   _ \  | |\/| |/ _ \ / _  |
+| |  | \__ \  _| \ V /  __/ | | | (_) | | | | | | | |  | | (_) | (_| |
+|_|  |_|___/_|    \_/ \___|_| |_|\___/|_| |_| |_| |_|  |_|\___/ \__,_|
+EOF
+echo -e "${RESET}"
 
 sleep 1
 while true; do

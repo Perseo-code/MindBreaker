@@ -25,14 +25,26 @@ OPTIONS=(
 )
 
 clear
-echo -e "${RED}========================"
-echo -e "¦${BLUE}${BOLD}Nmap Module ${RED}          ¦"
-echo -e "========================"
+echo -e "${BLUE}${BOLD}"
+cat << EOF
+ _   _                         __  __           _ 
+| \ | |_ __ ___   __ _ _ __   |  \/  | ___   __| |
+|  \| | '_   _ \ / _  | '_ \  | |\/| |/ _ \ / _  |
+| |\  | | | | | | (_| | |_) | | |  | | (_) | (_| |
+|_| \_|_| |_| |_|\__,_| .__/  |_|  |_|\___/ \__,_|
+                      |_|                   
+EOF
+echo -e "${RESET}"
 
 
 function executeNmapCommand() {
     local flags="${OPTIONS['flags']}"
     local ip="${OPTIONS['ip']}"
+    if [[ -z "${OPTIONS['ip']}" ]]; then
+        echo -e "${RED}[!] Error: Debes configurar una IP antes de ejecutar 'run'.${RESET}"
+        return
+    fi
+
     if [[ "$flags" =~ "-O" ]]; then
         sudo nmap $flags $ip
     else

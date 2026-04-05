@@ -27,6 +27,6 @@ The contributors of this repository are not responsible for the use that other u
 Remember to use the scripts responsibly. Be ethical and don't hack other people.
 
 # Credits
-**Perseo**: Only coder and the MindBreaker \
+**Perseo**: Only coder and the MindBreaker
 
 **Vellum Core Group**: This program is associated with this group.
