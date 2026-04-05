@@ -41,7 +41,7 @@ function executeNmapCommand() {
 }
 
 function show_options() {
-    echo -e "\n${BLUE}${BOLD}Netcat Module Options:${RESET}"
+    echo -e "\n${BLUE}${BOLD}Nmap Module Options:${RESET}"
     echo -e "${WHITE}==========================================${RESET}"
     printf "${CYAN}%-15s %-20s${RESET}\n" "OPTION" "CURRENT VALUE"
     echo -e "${WHITE}------------------------------------------${RESET}"
