@@ -108,7 +108,7 @@ chown -R $SUDO_USER:$SUDO_USER $MINDBREAKER_PATH
 
 echo -e "${CYAN}→ Adding environment variables in the shell..."
 
-cat << EOF >> ~/$SELECTED_RC
+cat << EOF >> /home/$SUDO_USER/$SELECTED_RC
 export MODULEDIR="$MINDBREAKER_PATH/modules"
 EOF
 
