@@ -9,6 +9,7 @@ WHITE='\033[1;37m'
 RESET='\033[0m'
 BOLD='\033[1m'
 
+SELECTED_RC=".bashrc" # or .zshrc (Also pretty optional, but recommended if developing scripts)
 MINDBREAKER_PATH="/opt/MindBreaker"
 
 if [ "$EUID" -ne 0 ]; then
@@ -101,7 +102,14 @@ bash mindbreaker.sh
 
 EOF
 
-echo -e "${CYAN}→ Changing permissions...${RESET}"
+echo -e "${CYAN}→ Changing permissions and ownership...${RESET}"
 chmod +x /usr/bin/mindbreaker
 chown -R $SUDO_USER:$SUDO_USER $MINDBREAKER_PATH
+
+echo -e "${CYAN}→ Adding environment variables in the shell..."
+
+cat << EOF >> ~/$SELECTED_RC
+export MODULEDIR="$MINDBREAKER_PATH/modules"
+EOF
+
 echo -e "${GREEN}${BOLD}→ Installation Finished successfully!${RESET}"
