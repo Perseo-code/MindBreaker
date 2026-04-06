@@ -77,14 +77,6 @@ done
 
 echo -e "${CYAN}→ Done installing missing dependencies!${RESET}"
 
-
-echo -e "${CYAN}→ Adding environment variables in the shell..."
-
-cat << EOF >> /home/$SUDO_USER/$SELECTED_RC
-export MODULEDIR="$MINDBREAKER_PATH/modules"
-export MINDBREAKER_PATH="$MINDBREAKER_PATH"
-EOF
-
 if [ -e "$MINDBREAKER_PATH" ]; then
     echo -e "${CYAN}${BOLD}→ MindBreaker folder detected!"
     echo -e "→ Starting update... ←${RESET}"
